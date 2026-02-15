@@ -35,19 +35,19 @@ text = ""
 
 [node name="Start" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Start Run"
+text = "Start gry"
 
 [node name="Unlocks" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Progression"
+text = "Postęp"
 
 [node name="Settings" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Settings"
+text = "Ustawienia"
 
 [node name="Quit" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Quit"
+text = "Wyjście"
 
 [connection signal="pressed" from="Center/VBox/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Center/VBox/Unlocks" to="." method="_on_unlocks_pressed"]

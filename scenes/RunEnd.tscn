@@ -28,11 +28,11 @@ text = "Result"
 
 [node name="Menu" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Main Menu"
+text = "Menu główne"
 
 [node name="Quit" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Quit"
+text = "Wyjście"
 
 [connection signal="pressed" from="Center/VBox/Menu" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="Center/VBox/Quit" to="." method="_on_quit_pressed"]

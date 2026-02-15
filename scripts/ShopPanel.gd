@@ -18,7 +18,7 @@ func build_offers(current_credits: int) -> void:
 	offers.clear()
 	selected_items.clear()
 	selected_weapon = {}
-	description_label.text = "Hover item/weapon to see effects."
+	description_label.text = "Najedź na broń/przedmiot, aby zobaczyć efekt."
 	for c in offers_list.get_children():
 		c.queue_free()
 	offers.append(ContentDB.random_weapon())
@@ -28,7 +28,7 @@ func build_offers(current_credits: int) -> void:
 		slot.set_item({})
 	for offer in offers:
 		var btn = Button.new()
-		btn.text = "%s ($%d)" % [offer["name"], offer["price"]]
+		btn.text = "%s (%d)" % [offer["name"], offer["price"]]
 		btn.mouse_entered.connect(_on_offer_hover.bind(offer))
 		btn.focus_entered.connect(_on_offer_hover.bind(offer))
 		btn.pressed.connect(_on_offer_pressed.bind(offer))
@@ -37,8 +37,8 @@ func build_offers(current_credits: int) -> void:
 
 func _describe_offer(offer: Dictionary) -> String:
 	if offer.has("type"):
-		return "Weapon: %s\nType: %s\nDamage: %.1f\nRate: %.2fs\n%s" % [offer["name"], offer["type"], offer.get("base_damage", 0.0), offer.get("rate", 0.0), ("Projectile speed: %.0f" % offer.get("proj_speed", 0.0)) if offer["type"] != "melee" else ("Melee range: %.0f" % offer.get("range", 60.0))]
-	return "Item: %s\nEffect: %+0.2f to %s" % [offer["name"], float(offer.get("value", 0.0)), offer.get("stat", "unknown")]
+		return "Broń: %s\nTyp: %s\nObrażenia: %.1f\nSzybkostrzelność: %.2fs\n%s" % [offer["name"], offer["type"], offer.get("base_damage", 0.0), offer.get("rate", 0.0), ("Prędkość pocisku: %.0f" % offer.get("proj_speed", 0.0)) if offer["type"] != "melee" else ("Zasięg walki wręcz: %.0f" % offer.get("range", 60.0))]
+	return "Przedmiot: %s\nEfekt: %+0.2f do %s" % [offer["name"], float(offer.get("value", 0.0)), offer.get("stat", "unknown")]
 
 func _on_offer_hover(offer: Dictionary) -> void:
 	description_label.text = _describe_offer(offer)
@@ -61,7 +61,7 @@ func _on_continue_pressed() -> void:
 	closed.emit(spent, selected_items, selected_weapon)
 
 func _update_wallet() -> void:
-	wallet_label.text = "Shop Budget: %d | Spent: %d" % [budget, spent]
+	wallet_label.text = "Budżet sklepu: %d | Wydano: %d" % [budget, spent]
 
 func swap_back(target: Control, data: Dictionary) -> void:
 	for node in $VBox/Inventory.get_children():

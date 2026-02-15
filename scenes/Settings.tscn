@@ -24,7 +24,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Center/VBox"]
 layout_mode = 2
-text = "Settings"
+text = "Ustawienia"
 
 [node name="Volume" type="HSlider" parent="Center/VBox"]
 layout_mode = 2
@@ -34,13 +34,13 @@ value = 80.0
 [node name="Language" type="OptionButton" parent="Center/VBox"]
 layout_mode = 2
 item_count = 2
-popup/item_0/text = "English"
-popup/item_1/text = "Spanish"
+popup/item_0/text = "Polski"
+popup/item_1/text = "English"
 selected = 0
 
 [node name="Back" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Back"
+text = "Powrót"
 
 [connection signal="value_changed" from="Center/VBox/Volume" to="." method="_on_volume_value_changed"]
 [connection signal="item_selected" from="Center/VBox/Language" to="." method="_on_language_item_selected"]

@@ -7,8 +7,8 @@ func _ready() -> void:
 	_refresh()
 
 func _refresh() -> void:
-	currency.text = "Meta Currency: %d" % GameData.progression["meta_currency"]
-	best_wave.text = "Best Wave: %d" % GameData.progression["best_wave"]
+	currency.text = "Waluta meta: %d" % GameData.progression["meta_currency"]
+	best_wave.text = "Najlepsza fala: %d" % GameData.progression["best_wave"]
 
 func _on_health_pressed() -> void:
 	if GameData.buy_meta_perk("bonus_health"):

@@ -2,7 +2,7 @@ extends Node
 
 const SAVE_PATH := "user://savegame.json"
 
-var locale := "en"
+var locale := "pl"
 var master_volume := 0.8
 var selected_character := "scout"
 

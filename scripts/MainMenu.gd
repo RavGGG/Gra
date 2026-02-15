@@ -16,7 +16,7 @@ func _ready() -> void:
 
 func _on_character_selected(id: String) -> void:
 	var data = GameData.character_defs[id]
-	details.text = "%s\nHP %.0f  SPD %.0f  DMG %.2f\n%s" % [data["label"], data["health"], data["speed"], data["damage"], data["ability"]]
+	details.text = "%s\nHP %.0f  SZYB %.0f  OBR %.2f\n%s" % [data["label"], data["health"], data["speed"], data["damage"], data["ability"]]
 	GameData.selected_character = id
 
 func _on_start_pressed() -> void:

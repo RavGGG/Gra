@@ -16,23 +16,23 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="VBox"]
 layout_mode = 2
-text = "Between Wave Shop"
+text = "Sklep między falami"
 
 [node name="Wallet" type="Label" parent="VBox"]
 layout_mode = 2
-text = "Shop Budget: 0"
+text = "Budżet sklepu: 0"
 
 [node name="Offers" type="VBoxContainer" parent="VBox"]
 layout_mode = 2
 
 [node name="Description" type="Label" parent="VBox"]
 layout_mode = 2
-text = "Hover item/weapon to see effects."
+text = "Najedź na broń/przedmiot, aby zobaczyć efekt."
 autowrap_mode = 3
 
 [node name="InventoryTitle" type="Label" parent="VBox"]
 layout_mode = 2
-text = "Inventory (drag & drop slots)"
+text = "Ekwipunek (przeciągnij i upuść)"
 
 [node name="Inventory" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
@@ -44,6 +44,6 @@ layout_mode = 2
 
 [node name="Continue" type="Button" parent="VBox"]
 layout_mode = 2
-text = "Continue"
+text = "Kontynuuj"
 
 [connection signal="pressed" from="VBox/Continue" to="." method="_on_continue_pressed"]

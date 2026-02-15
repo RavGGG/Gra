@@ -31,8 +31,8 @@ value = 100.0
 
 [node name="Wave" type="Label" parent="Margin/VBox"]
 layout_mode = 2
-text = "Wave 1"
+text = "Fala 1"
 
 [node name="Credits" type="Label" parent="Margin/VBox"]
 layout_mode = 2
-text = "Materials: 0"
+text = "Materiały: 0"

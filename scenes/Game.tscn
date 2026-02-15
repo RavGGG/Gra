@@ -47,11 +47,11 @@ layout_mode = 2
 
 [node name="Resume" type="Button" parent="CanvasLayer/PauseMenu/VBox"]
 layout_mode = 2
-text = "Resume"
+text = "Wznów"
 
 [node name="Menu" type="Button" parent="CanvasLayer/PauseMenu/VBox"]
 layout_mode = 2
-text = "Main Menu"
+text = "Menu główne"
 
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
 [connection signal="timeout" from="WaveTimer" to="." method="_on_wave_timer_timeout"]

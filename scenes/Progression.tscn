@@ -30,23 +30,23 @@ layout_mode = 2
 
 [node name="Health" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Buy +Health (20)"
+text = "Kup +Zdrowie (20)"
 
 [node name="Damage" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Buy +Damage (20)"
+text = "Kup +Obrażenia (20)"
 
 [node name="Speed" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Buy +Speed (20)"
+text = "Kup +Szybkość (20)"
 
 [node name="UnlockChar" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Unlock Next Character (40)"
+text = "Odblokuj postać (40)"
 
 [node name="Back" type="Button" parent="Center/VBox"]
 layout_mode = 2
-text = "Back"
+text = "Powrót"
 
 [connection signal="pressed" from="Center/VBox/Health" to="." method="_on_health_pressed"]
 [connection signal="pressed" from="Center/VBox/Damage" to="." method="_on_damage_pressed"]

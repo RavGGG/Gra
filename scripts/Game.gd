@@ -26,6 +26,12 @@ func _ready() -> void:
 	pause_menu.visible = false
 	$CanvasLayer/ArenaColor.visible = false
 
+	# UI pauzy musi działać gdy drzewo jest zatrzymane.
+	pause_menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	$CanvasLayer/PauseMenu/VBox.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	$CanvasLayer/PauseMenu/VBox/Resume.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	$CanvasLayer/PauseMenu/VBox/Menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+
 	spawn_timer.one_shot = false
 	wave_timer.one_shot = true
 
@@ -40,12 +46,16 @@ func _process(delta: float) -> void:
 		_toggle_pause()
 
 func _toggle_pause() -> void:
+	if paused_for_shop:
+		return
 	get_tree().paused = not get_tree().paused
 	pause_menu.visible = get_tree().paused
 
 func _start_wave(next_wave: int) -> void:
 	paused_for_shop = false
 	shop.visible = false
+	get_tree().paused = false
+	pause_menu.visible = false
 	_clear_enemies()
 	_clear_pickups()
 	wave = next_wave
@@ -68,10 +78,8 @@ func _finish_wave() -> void:
 		_end_run(true)
 		return
 
-	if wave % 2 == 0:
-		_open_shop()
-	else:
-		_start_wave(wave + 1)
+	# Sklep po każdej rundzie.
+	_open_shop()
 
 func _spawn_enemy_near_player(distance: float) -> void:
 	var enemy = preload("res://scenes/Enemy.tscn").instantiate()
@@ -138,7 +146,8 @@ func _end_run(victory: bool) -> void:
 	queue_free()
 
 func _on_resume_pressed() -> void:
-	_toggle_pause()
+	if get_tree().paused:
+		_toggle_pause()
 
 func _on_menu_pressed() -> void:
 	GameData.save_data()

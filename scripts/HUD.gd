@@ -9,7 +9,7 @@ func update_hp(value: float, max_value: float) -> void:
 	hp_bar.value = value
 
 func update_wave(wave: int, time_left: float) -> void:
-	wave_label.text = "Wave %d  |  %.0fs" % [wave, time_left]
+	wave_label.text = "Fala %d  |  %.0fs" % [wave, time_left]
 
 func update_credits(value: int) -> void:
-	credits_label.text = "Materials: %d" % value
+	credits_label.text = "Materiały: %d" % value
