@@ -17,13 +17,10 @@ func _ready() -> void:
 func _on_character_selected(id: String) -> void:
 	var data = GameData.character_defs[id]
 	details.text = "%s\nHP %.0f  SPD %.0f  DMG %.2f\n%s" % [data["label"], data["health"], data["speed"], data["damage"], data["ability"]]
-	set_meta("selected_character", id)
+	GameData.selected_character = id
 
 func _on_start_pressed() -> void:
-	var game = preload("res://scenes/Game.tscn").instantiate()
-	game.set_meta("character", get_meta("selected_character", "scout"))
-	get_tree().root.add_child(game)
-	queue_free()
+	get_tree().change_scene_to_file("res://scenes/Game.tscn")
 
 func _on_unlocks_pressed() -> void:
 	var s = preload("res://scenes/Progression.tscn").instantiate()

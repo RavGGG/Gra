@@ -15,7 +15,7 @@ var arenas := [Color(0.08,0.1,0.13), Color(0.12,0.08,0.12), Color(0.08,0.13,0.09
 @onready var pause_menu = $CanvasLayer/PauseMenu
 
 func _ready() -> void:
-	selected_character = get_meta("character", "scout")
+	selected_character = GameData.selected_character
 	var character = GameData.apply_meta_bonus(GameData.character_defs[selected_character])
 	player.configure(character)
 	player.died.connect(_on_player_died)

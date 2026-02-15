@@ -4,6 +4,7 @@ const SAVE_PATH := "user://savegame.json"
 
 var locale := "en"
 var master_volume := 0.8
+var selected_character := "scout"
 
 var progression := {
 	"meta_currency": 0,
