@@ -36,3 +36,7 @@ text = "Fala 1"
 [node name="Credits" type="Label" parent="Margin/VBox"]
 layout_mode = 2
 text = "Materiały: 0"
+
+[node name="Weapons" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "[1] --- | [2] ---"

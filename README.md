@@ -8,7 +8,7 @@ Godot 4.x (GDScript)
 ## Features
 - 6 playable potato classes with unique base stats and abilities.
 - Wave-based enemy scaling and run win/loss conditions.
-- 40 generated weapon definitions (melee, ranged, special).
+- 40 generated weapon definitions with distinct styles (pistol, rifle, bazooka AoE, sword/spear melee).
 - 50 generated item/perk definitions and between-wave shop.
 - Drag & drop inventory slots in the shop UI.
 - Meta progression: currency, stat perks, character unlocks.
@@ -21,6 +21,7 @@ Godot 4.x (GDScript)
 - Move: WASD
 - Aim: Mouse
 - Fire: Left Mouse Button (manual aim mode)
+- Switch weapon slot: 1 / 2
 - Pause: Escape
 
 ## Run in Editor

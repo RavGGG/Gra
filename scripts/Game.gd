@@ -22,11 +22,12 @@ func _ready() -> void:
 	player.died.connect(_on_player_died)
 	player.hp_changed.connect(hud.update_hp)
 	hud.update_credits(credits)
+	hud.update_weapon_slots(player.get_weapon_slot(0).get("name", "Pusty"), player.get_weapon_slot(1).get("name", "Pusty"), player.active_weapon_slot)
+	player.weapon_changed.connect(_on_weapon_changed)
 	shop.visible = false
 	pause_menu.visible = false
 	$CanvasLayer/ArenaColor.visible = false
 
-	# UI pauzy musi działać gdy drzewo jest zatrzymane.
 	pause_menu.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	$CanvasLayer/PauseMenu/VBox.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	$CanvasLayer/PauseMenu/VBox/Resume.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
@@ -42,8 +43,12 @@ func _process(delta: float) -> void:
 		return
 	time_left = max(0.0, time_left - delta)
 	hud.update_wave(wave, time_left)
+	hud.update_weapon_slots(player.get_weapon_slot(0).get("name", "Pusty"), player.get_weapon_slot(1).get("name", "Pusty"), player.active_weapon_slot)
 	if Input.is_action_just_pressed("pause"):
 		_toggle_pause()
+
+func _on_weapon_changed(_slot_index: int, _weapon_name: String) -> void:
+	hud.update_weapon_slots(player.get_weapon_slot(0).get("name", "Pusty"), player.get_weapon_slot(1).get("name", "Pusty"), player.active_weapon_slot)
 
 func _toggle_pause() -> void:
 	if paused_for_shop:
@@ -59,34 +64,44 @@ func _start_wave(next_wave: int) -> void:
 	_clear_enemies()
 	_clear_pickups()
 	wave = next_wave
-	time_left = 30.0 + wave
+	time_left = 28.0 + wave * 1.5
 	hud.update_wave(wave, time_left)
 
-	for i in (3 + int(wave / 3)):
-		_spawn_enemy_near_player(200.0 + i * 24.0)
+	var start_count = 2 + int(wave / 4)
+	for i in start_count:
+		_spawn_enemy_near_player(260.0 + i * 22.0)
 
+	spawn_timer.wait_time = max(0.9, 2.0 - wave * 0.04)
 	spawn_timer.start()
 	wave_timer.start(time_left)
 
 func _finish_wave() -> void:
-	credits += 20 + wave * 3
+	credits += 18 + wave * 3
 	GameData.progression["best_wave"] = max(GameData.progression["best_wave"], wave)
-	GameData.add_meta_currency(5 + wave)
+	GameData.add_meta_currency(4 + wave)
 	hud.update_credits(credits)
 
 	if wave >= MAX_WAVE:
 		_end_run(true)
 		return
 
-	# Sklep po każdej rundzie.
 	_open_shop()
+
+func _pick_enemy_type() -> String:
+	var roll = randf()
+	if wave >= 5 and roll < 0.18:
+		return "tank"
+	if wave >= 3 and roll < 0.45:
+		return "runner"
+	return "grunt"
 
 func _spawn_enemy_near_player(distance: float) -> void:
 	var enemy = preload("res://scenes/Enemy.tscn").instantiate()
 	enemy.player = player
-	enemy.max_hp = 14 + wave * 4
-	enemy.speed = 80 + wave * 6
-	enemy.contact_damage = 4 + wave
+	enemy.enemy_type = _pick_enemy_type()
+	enemy.max_hp = 12 + wave * 2.6
+	enemy.speed = 72 + wave * 2.8
+	enemy.contact_damage = 3 + wave * 0.6
 	var angle = randf() * TAU
 	enemy.global_position = player.global_position + Vector2.RIGHT.rotated(angle) * distance
 	enemy.global_position.x = clamp(enemy.global_position.x, 40.0, 1240.0)
@@ -96,8 +111,9 @@ func _spawn_enemy_near_player(distance: float) -> void:
 func _on_spawn_timer_timeout() -> void:
 	if paused_for_shop:
 		return
-	for i in (1 + int(wave / 4)):
-		_spawn_enemy_near_player(260.0 + i * 28.0)
+	var spawn_count = 1 + int(wave / 8)
+	for i in spawn_count:
+		_spawn_enemy_near_player(300.0 + i * 18.0)
 
 func _on_wave_timer_timeout() -> void:
 	_finish_wave()
@@ -109,12 +125,10 @@ func _open_shop() -> void:
 	_clear_enemies()
 	_clear_pickups()
 	shop.visible = true
-	shop.build_offers(credits)
+	shop.build_offers(credits, player)
 
-func _on_shop_closed(spent: int, selected_items: Array, selected_weapon: Dictionary) -> void:
+func _on_shop_closed(spent: int, selected_items: Array, _selected_weapon: Dictionary) -> void:
 	credits -= spent
-	if not selected_weapon.is_empty():
-		player.current_weapon = selected_weapon
 	for item in selected_items:
 		player.apply_item(item)
 	hud.update_credits(credits)
