@@ -25,6 +25,11 @@ text = "Shop Budget: 0"
 [node name="Offers" type="VBoxContainer" parent="VBox"]
 layout_mode = 2
 
+[node name="Description" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Hover item/weapon to see effects."
+autowrap_mode = 3
+
 [node name="InventoryTitle" type="Label" parent="VBox"]
 layout_mode = 2
 text = "Inventory (drag & drop slots)"

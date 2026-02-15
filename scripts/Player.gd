@@ -6,7 +6,6 @@ signal hp_changed(value: float, max_value: float)
 @export var base_speed := 220.0
 @export var max_health := 100.0
 @export var damage_mult := 1.0
-@export var fire_cooldown := 0.4
 
 var health := 100.0
 var aim_manual := true
@@ -23,6 +22,9 @@ var item_mods := {
 }
 
 @onready var fire_timer: Timer = $FireTimer
+
+func _ready() -> void:
+	add_to_group("player")
 
 func configure(character_data: Dictionary) -> void:
 	base_speed = character_data["speed"]
@@ -47,13 +49,14 @@ func fire() -> void:
 	if current_weapon["type"] == "melee":
 		for body in get_tree().get_nodes_in_group("enemies"):
 			if global_position.distance_to(body.global_position) < current_weapon.get("range", 60.0):
-				body.take_hit(_weapon_damage())
+				body.take_hit(_weapon_damage(), self)
 	else:
 		var projectile = preload("res://scenes/Projectile.tscn").instantiate()
 		projectile.global_position = global_position
 		projectile.direction = (get_global_mouse_position() - global_position).normalized()
 		projectile.speed = current_weapon.get("proj_speed", 520.0)
 		projectile.damage = _weapon_damage()
+		projectile.shooter = self
 		get_tree().current_scene.add_child(projectile)
 
 func _weapon_damage() -> float:
@@ -78,3 +81,7 @@ func take_damage(value: float) -> void:
 func heal(value: float) -> void:
 	health = min(max_health, health + value)
 	hp_changed.emit(health, max_health)
+
+func on_dealt_damage(damage_done: float) -> void:
+	if item_mods["lifesteal"] > 0.0:
+		heal(max(0.0, damage_done * item_mods["lifesteal"]))

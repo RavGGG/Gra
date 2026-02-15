@@ -19,10 +19,12 @@ func _physics_process(_delta: float) -> void:
 	if global_position.distance_to(player.global_position) < 22.0:
 		player.take_damage(contact_damage)
 
-func take_hit(dmg: float) -> void:
+func take_hit(dmg: float, attacker: Node = null) -> void:
 	hp -= dmg
+	if attacker and attacker.has_method("on_dealt_damage"):
+		attacker.on_dealt_damage(dmg)
 	if hp <= 0:
-		if randf() < 0.22:
+		if randf() < 0.5:
 			var pickup = preload("res://scenes/Pickup.tscn").instantiate()
 			pickup.global_position = global_position
 			get_tree().current_scene.add_child(pickup)
