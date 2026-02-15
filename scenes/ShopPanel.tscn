@@ -70,10 +70,11 @@ text = "Kontynuuj"
 
 [node name="Tooltip" type="PanelContainer" parent="."]
 visible = false
-offset_left = 560.0
-offset_top = 140.0
+mouse_filter = 2
+offset_left = 520.0
+offset_top = 160.0
 offset_right = 790.0
-offset_bottom = 290.0
+offset_bottom = 350.0
 
 [node name="Label" type="Label" parent="Tooltip"]
 layout_mode = 2

@@ -9,7 +9,6 @@ var budget := 0
 var spent := 0
 var player_ref: Node = null
 var selected_weapon_offer: Dictionary = {}
-var weapon_purchase_slot := 0
 
 @onready var offers_list = $VBox/Offers
 @onready var wallet_label = $VBox/Wallet
@@ -17,8 +16,6 @@ var weapon_purchase_slot := 0
 @onready var popup_label = $Tooltip/Label
 @onready var slot1_name = $VBox/WeaponRow/Slot1Name
 @onready var slot2_name = $VBox/WeaponRow/Slot2Name
-@onready var buy_slot1 = $VBox/WeaponRow/BuyTo1
-@onready var buy_slot2 = $VBox/WeaponRow/BuyTo2
 
 func build_offers(current_credits: int, player_node: Node) -> void:
 	budget = current_credits
@@ -32,39 +29,46 @@ func build_offers(current_credits: int, player_node: Node) -> void:
 
 	for c in offers_list.get_children():
 		c.queue_free()
-	offers.append(ContentDB.random_weapon())
+	offers.append(ContentDB.random_weapon().duplicate(true))
 	for i in 3:
-		offers.append(ContentDB.random_item())
+		offers.append(ContentDB.random_item().duplicate(true))
 	for slot in $VBox/Inventory.get_children():
 		slot.set_item({})
-	for offer in offers:
+
+	for i in offers.size():
 		var btn = Button.new()
-		btn.text = "%s (%d)" % [offer["name"], offer["price"]]
-		btn.mouse_entered.connect(_on_offer_hover.bind(offer, btn))
-		btn.mouse_exited.connect(_on_offer_unhover)
-		btn.focus_entered.connect(_on_offer_hover.bind(offer, btn))
-		btn.pressed.connect(_on_offer_pressed.bind(offer))
+		btn.text = _offer_button_text(i)
+		btn.mouse_entered.connect(_on_offer_hover.bind(i))
+		btn.focus_entered.connect(_on_offer_hover.bind(i))
+		btn.pressed.connect(_on_offer_pressed.bind(i))
 		offers_list.add_child(btn)
+
 	_refresh_weapon_row()
 	_update_wallet()
+
+func _offer_button_text(index: int) -> String:
+	if index < 0 or index >= offers.size():
+		return "---"
+	return "%s (%d)" % [offers[index]["name"], offers[index]["price"]]
 
 func _describe_offer(offer: Dictionary) -> String:
 	if offer.has("type"):
 		return "Broń: %s\nTyp: %s\nObrażenia: %.1f\nSzybkostrzelność: %.2fs\n%s" % [offer["name"], offer["type"], offer.get("base_damage", 0.0), offer.get("rate", 0.0), ("Eksplozja: %.0f" % offer.get("explosion_radius", 0.0)) if offer.get("explosion_radius", 0.0) > 0.0 else ("Zasięg: %.0f" % offer.get("range", 60.0))]
 	return "Przedmiot: %s\nEfekt: %+0.2f do %s\nCena rośnie po zakupie." % [offer["name"], float(offer.get("value", 0.0)), offer.get("stat", "unknown")]
 
-func _on_offer_hover(offer: Dictionary, btn: Control) -> void:
-	popup_label.text = _describe_offer(offer)
+func _on_offer_hover(index: int) -> void:
+	if index < 0 or index >= offers.size():
+		return
+	popup_label.text = _describe_offer(offers[index])
 	popup_panel.visible = true
-	popup_panel.global_position = btn.get_screen_position() + Vector2(btn.size.x + 16.0, -10.0)
 
-func _on_offer_unhover() -> void:
-	popup_panel.visible = false
-
-func _on_offer_pressed(offer: Dictionary) -> void:
+func _on_offer_pressed(index: int) -> void:
+	if index < 0 or index >= offers.size():
+		return
+	var offer = offers[index]
 	if offer.has("type"):
-		selected_weapon_offer = offer
-		popup_label.text = _describe_offer(offer) + "\n\nWybierz slot 1/2 przyciskami obok."
+		selected_weapon_offer = offer.duplicate(true)
+		popup_label.text = _describe_offer(offer) + "\n\nKliknij 'Kup do slotu 1' lub 'Kup do slotu 2'."
 		popup_panel.visible = true
 		return
 
@@ -76,35 +80,31 @@ func _on_offer_pressed(offer: Dictionary) -> void:
 		if slot.item.is_empty():
 			slot.set_item(offer)
 			break
-	offer["price"] = int(ceil(float(offer["price"]) * 1.2))
+	offers[index]["price"] = int(ceil(float(offers[index]["price"]) * 1.2))
 	_refresh_offer_buttons()
 	_update_wallet()
 
 func _refresh_offer_buttons() -> void:
-	var i := 0
-	for btn in offers_list.get_children():
-		if btn is Button and i < offers.size():
-			btn.text = "%s (%d)" % [offers[i]["name"], offers[i]["price"]]
-		i += 1
+	for i in offers_list.get_child_count():
+		var btn = offers_list.get_child(i)
+		if btn is Button:
+			btn.text = _offer_button_text(i)
 
 func _on_buy_to_1_pressed() -> void:
-	weapon_purchase_slot = 0
-	_buy_selected_weapon()
+	_buy_selected_weapon(0)
 
 func _on_buy_to_2_pressed() -> void:
-	weapon_purchase_slot = 1
-	_buy_selected_weapon()
+	_buy_selected_weapon(1)
 
-func _buy_selected_weapon() -> void:
+func _buy_selected_weapon(slot_index: int) -> void:
 	if selected_weapon_offer.is_empty() or player_ref == null:
 		return
 	var price = int(selected_weapon_offer.get("price", 0))
 	if spent + price > budget:
 		return
 	spent += price
-	player_ref.set_weapon_slot(weapon_purchase_slot, selected_weapon_offer)
-	selected_weapon_offer["price"] = int(ceil(float(selected_weapon_offer["price"]) * 1.25))
-	_refresh_offer_buttons()
+	player_ref.set_weapon_slot(slot_index, selected_weapon_offer)
+	selected_weapon_offer = {}
 	_refresh_weapon_row()
 	_update_wallet()
 

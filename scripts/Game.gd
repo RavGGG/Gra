@@ -67,11 +67,11 @@ func _start_wave(next_wave: int) -> void:
 	time_left = 28.0 + wave * 1.5
 	hud.update_wave(wave, time_left)
 
-	var start_count = 2 + int(wave / 4)
+	var start_count = 1 + int(wave / 5)
 	for i in start_count:
 		_spawn_enemy_near_player(260.0 + i * 22.0)
 
-	spawn_timer.wait_time = max(0.9, 2.0 - wave * 0.04)
+	spawn_timer.wait_time = max(1.15, 2.4 - wave * 0.03)
 	spawn_timer.start()
 	wave_timer.start(time_left)
 
@@ -89,9 +89,11 @@ func _finish_wave() -> void:
 
 func _pick_enemy_type() -> String:
 	var roll = randf()
-	if wave >= 5 and roll < 0.18:
+	if wave >= 7 and roll < 0.12:
 		return "tank"
-	if wave >= 3 and roll < 0.45:
+	if wave >= 4 and roll < 0.27:
+		return "shooter"
+	if wave >= 3 and roll < 0.48:
 		return "runner"
 	return "grunt"
 
@@ -111,7 +113,7 @@ func _spawn_enemy_near_player(distance: float) -> void:
 func _on_spawn_timer_timeout() -> void:
 	if paused_for_shop:
 		return
-	var spawn_count = 1 + int(wave / 8)
+	var spawn_count = 1 + int(wave / 12)
 	for i in spawn_count:
 		_spawn_enemy_near_player(300.0 + i * 18.0)
 

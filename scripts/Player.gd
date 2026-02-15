@@ -70,12 +70,14 @@ func fire() -> void:
 	fire_timer.start(max(0.05, current_weapon["rate"] + item_mods["fire_rate"]))
 
 	if current_weapon["type"] == "melee":
+		_apply_recoil(3.0)
 		_slash_effect(current_weapon)
 		for body in get_tree().get_nodes_in_group("enemies"):
 			if global_position.distance_to(body.global_position) < current_weapon.get("range", 60.0):
 				body.take_hit(_weapon_damage(current_weapon), self)
 		return
 
+	_apply_recoil(6.0 if current_weapon.get("style", "") != "rifle" else 2.0)
 	var projectile = preload("res://scenes/Projectile.tscn").instantiate()
 	projectile.global_position = global_position
 	projectile.direction = (get_global_mouse_position() - global_position).normalized()
@@ -99,6 +101,13 @@ func _slash_effect(weapon: Dictionary) -> void:
 	await get_tree().create_timer(0.08).timeout
 	slash.queue_free()
 
+
+func _apply_recoil(amount: float) -> void:
+	var dir = (get_global_mouse_position() - global_position).normalized()
+	global_position -= dir * amount
+	global_position.x = clamp(global_position.x, 24.0, 1256.0)
+	global_position.y = clamp(global_position.y, 24.0, 696.0)
+
 func _update_weapon_visual() -> void:
 	var w = get_current_weapon()
 	if w.is_empty():
@@ -119,6 +128,9 @@ func _update_weapon_visual() -> void:
 		"sword":
 			weapon_visual.polygon = PackedVector2Array([Vector2(4, -2), Vector2(24, -1), Vector2(24, 1), Vector2(4, 2)])
 			weapon_visual.color = Color(0.8, 0.8, 0.95)
+		"spear":
+			weapon_visual.polygon = PackedVector2Array([Vector2(2, -1), Vector2(26, -1), Vector2(30, 0), Vector2(26, 1), Vector2(2, 1)])
+			weapon_visual.color = Color(0.75, 0.75, 0.82)
 		_:
 			weapon_visual.polygon = PackedVector2Array([Vector2(5, -3), Vector2(18, -3), Vector2(18, 3), Vector2(5, 3)])
 			weapon_visual.color = Color(0.3, 0.3, 0.3)

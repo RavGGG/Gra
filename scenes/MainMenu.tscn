@@ -11,6 +11,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.11, 0.16, 1)
+
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -19,37 +28,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="Center"]
+[node name="Card" type="PanelContainer" parent="Center"]
+layout_mode = 2
+custom_minimum_size = Vector2(360, 560)
+
+[node name="VBox" type="VBoxContainer" parent="Center/Card"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Center/VBox"]
+[node name="Title" type="Label" parent="Center/Card/VBox"]
 layout_mode = 2
 text = "Spud Survivor"
 
-[node name="CharacterList" type="VBoxContainer" parent="Center/VBox"]
+[node name="CharacterList" type="VBoxContainer" parent="Center/Card/VBox"]
 layout_mode = 2
 
-[node name="Details" type="Label" parent="Center/VBox"]
+[node name="Details" type="Label" parent="Center/Card/VBox"]
 layout_mode = 2
 text = ""
 
-[node name="Start" type="Button" parent="Center/VBox"]
+[node name="Start" type="Button" parent="Center/Card/VBox"]
 layout_mode = 2
 text = "Start gry"
 
-[node name="Unlocks" type="Button" parent="Center/VBox"]
+[node name="Unlocks" type="Button" parent="Center/Card/VBox"]
 layout_mode = 2
 text = "Postęp"
 
-[node name="Settings" type="Button" parent="Center/VBox"]
+[node name="Settings" type="Button" parent="Center/Card/VBox"]
 layout_mode = 2
 text = "Ustawienia"
 
-[node name="Quit" type="Button" parent="Center/VBox"]
+[node name="Quit" type="Button" parent="Center/Card/VBox"]
 layout_mode = 2
 text = "Wyjście"
 
-[connection signal="pressed" from="Center/VBox/Start" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="Center/VBox/Unlocks" to="." method="_on_unlocks_pressed"]
-[connection signal="pressed" from="Center/VBox/Settings" to="." method="_on_settings_pressed"]
-[connection signal="pressed" from="Center/VBox/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Center/Card/VBox/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Center/Card/VBox/Unlocks" to="." method="_on_unlocks_pressed"]
+[connection signal="pressed" from="Center/Card/VBox/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Center/Card/VBox/Quit" to="." method="_on_quit_pressed"]

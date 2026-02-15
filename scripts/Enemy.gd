@@ -8,6 +8,7 @@ extends CharacterBody2D
 var hp := 20.0
 var player: Node2D
 var attack_cooldown := 0.0
+var shoot_cooldown := 0.0
 
 func _ready() -> void:
 	hp = max_hp
@@ -18,9 +19,11 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(player):
 		return
 	attack_cooldown = max(0.0, attack_cooldown - delta)
+	shoot_cooldown = max(0.0, shoot_cooldown - delta)
 
-	var desired = (player.global_position - global_position).normalized()
-	# Lekkie rozpychanie stada, aby wróg nie blokował całkiem ruchu gracza.
+	var to_player = player.global_position - global_position
+	var desired = to_player.normalized()
+
 	for other in get_tree().get_nodes_in_group("enemies"):
 		if other == self:
 			continue
@@ -29,12 +32,27 @@ func _physics_process(delta: float) -> void:
 		if dist > 0.0 and dist < 26.0:
 			desired += offset.normalized() * (26.0 - dist) * 0.05
 
-	velocity = desired.normalized() * speed
+	if enemy_type == "shooter" and to_player.length() < 180.0:
+		velocity = desired.normalized() * speed * 0.55
+	else:
+		velocity = desired.normalized() * speed
 	move_and_slide()
 
-	if global_position.distance_to(player.global_position) < 24.0 and attack_cooldown <= 0.0:
+	if enemy_type == "shooter":
+		_try_shoot(to_player)
+	elif to_player.length() < 24.0 and attack_cooldown <= 0.0:
 		player.take_damage(contact_damage)
-		attack_cooldown = 0.45
+		attack_cooldown = 0.5
+
+func _try_shoot(to_player: Vector2) -> void:
+	if shoot_cooldown > 0.0 or to_player.length() > 420.0:
+		return
+	var p = preload("res://scenes/EnemyProjectile.tscn").instantiate()
+	p.global_position = global_position
+	p.direction = to_player.normalized()
+	p.damage = contact_damage * 0.8
+	get_tree().current_scene.call_deferred("add_child", p)
+	shoot_cooldown = 1.2
 
 func _setup_type_visuals_and_stats() -> void:
 	match enemy_type:
@@ -46,10 +64,16 @@ func _setup_type_visuals_and_stats() -> void:
 			$Body.polygon = PackedVector2Array([Vector2(-10, -7), Vector2(12, 0), Vector2(-10, 7)])
 		"tank":
 			speed *= 0.75
-			max_hp *= 1.8
-			contact_damage *= 1.3
+			max_hp *= 1.9
+			contact_damage *= 1.35
 			$Body.color = Color(0.55, 0.2, 0.75)
 			$Body.polygon = PackedVector2Array([Vector2(-13,-13), Vector2(13,-13), Vector2(13,13), Vector2(-13,13)])
+		"shooter":
+			speed *= 0.95
+			max_hp *= 0.9
+			contact_damage *= 1.0
+			$Body.color = Color(0.25, 0.8, 0.95)
+			$Body.polygon = PackedVector2Array([Vector2(-12,-9), Vector2(11,-9), Vector2(12,0), Vector2(11,9), Vector2(-12,9), Vector2(-8,0)])
 		_:
 			$Body.color = Color(0.85, 0.24, 0.24)
 			$Body.polygon = PackedVector2Array([Vector2(-11,-11), Vector2(11,-11), Vector2(11,11), Vector2(-11,11)])
@@ -60,7 +84,7 @@ func take_hit(dmg: float, attacker: Node = null) -> void:
 	if attacker and attacker.has_method("on_dealt_damage"):
 		attacker.on_dealt_damage(dmg)
 	if hp <= 0:
-		if randf() < 0.6:
+		if randf() < 0.65:
 			var pickup = preload("res://scenes/Pickup.tscn").instantiate()
 			pickup.global_position = global_position
 			get_tree().current_scene.call_deferred("add_child", pickup)

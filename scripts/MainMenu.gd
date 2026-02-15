@@ -1,7 +1,7 @@
 extends Control
 
-@onready var char_list = $Center/VBox/CharacterList
-@onready var details = $Center/VBox/Details
+@onready var char_list = $Center/Card/VBox/CharacterList
+@onready var details = $Center/Card/VBox/Details
 
 func _ready() -> void:
 	for c in char_list.get_children():
